@@ -31,35 +31,35 @@ const BorrowBook = ({
         description: message,
         variant: "destructive",
       });
-    }
+    } else {
+      setBorrowing(true);
 
-    setBorrowing(true);
+      try {
+        const result = await borrowBook({ bookId, userId });
 
-    try {
-      const result = await borrowBook({ bookId, userId });
+        if (result.success) {
+          toast({
+            title: "Success",
+            description: "Book borrowed successfully",
+          });
 
-      if (result.success) {
-        toast({
-          title: "Success",
-          description: "Book borrowed successfully",
-        });
-
-        router.push("/");
-      } else {
+          router.push("/");
+        } else {
+          toast({
+            title: "Error",
+            description: result.error,
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
         toast({
           title: "Error",
-          description: result.error,
+          description: "An error occurred while borrowing the book",
           variant: "destructive",
         });
+      } finally {
+        setBorrowing(false);
       }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "An error occurred while borrowing the book",
-        variant: "destructive",
-      });
-    } finally {
-      setBorrowing(false);
     }
   };
 
